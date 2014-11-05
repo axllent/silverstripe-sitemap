@@ -11,7 +11,8 @@
       <body>
         <div id="content">
           <p class="expl">
-            This sitemap contains <xsl:value-of select="count(sitemap:urlset/sitemap:url)"/> URLs.
+            <a href="../../../sitemap.xml">[ &lt;&lt; ]</a>
+            - This sitemap contains <xsl:value-of select="count(sitemap:urlset/sitemap:url)"/> URLs.
           </p>
           <table id="sitemap" cellpadding="3" class="tablesorter">
             <thead>
