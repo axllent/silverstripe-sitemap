@@ -26,7 +26,7 @@ class Sitemap {
 			trigger_error('SimpleSitemap::register_dataobject($className, $options=array())', E_USER_ERROR);
 			return false;
 		}
-		if (!self::is_registered($className)) {
+		if (!self::is_registered($className) && class_exists($className)) {
 			$className::add_extension('SitemapExtension');
 			self::$dataobjects[$className] = $options;
 		}
