@@ -1,0 +1,6 @@
+---
+Name: sitemap
+---
+Director:
+  rules:
+    'sitemap.xml': 'Sitemap_Controller'
