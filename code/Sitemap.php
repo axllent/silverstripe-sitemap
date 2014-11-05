@@ -10,7 +10,7 @@
  * License: MIT-style license http://opensource.org/licenses/MIT
  * Authors: Techno Joy development team (www.technojoy.co.nz)
  *
- * Heavily based on github.com/silverstripe-labs/silverstripe-googlesitemaps
+ * Based on github.com/silverstripe-labs/silverstripe-googlesitemaps
  */
 
 class Sitemap {
