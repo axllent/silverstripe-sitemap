@@ -32,18 +32,42 @@ class Sitemap {
 		}
 	}
 
+	/**
+	 * Do not include SiteTree
+	 *
+	 * @param null
+	 * @return null
+	 */
 	public static function exclude_sitetree() {
 		self::$include_sitetree = false;
 	}
 
+	/**
+	 * Enable Google pings
+	 *
+	 * @param null
+	 * @return null
+	 */
 	public static function enable_google_notifications() {
 		self::$google_notifications = false;
 	}
 
+	/**
+	 * Is class already registered?
+	 *
+	 * @param String
+	 * @return boolean
+	 */
 	public static function is_registered($className) {
 		return isset(self::$dataobjects[$className]);
 	}
 
+	/**
+	 * Remove class from list
+	 *
+	 * @param String
+	 * @return null
+	 */
 	public static function unregister_dataobject($className) {
 		if (self::is_registered($className)) {
 			unset(self::$dataobjects[$className]);
@@ -51,8 +75,9 @@ class Sitemap {
 	}
 
 	/**
-	 * Returns the string frequency of edits for a particular dataobject class.
+	 * Returns the string frequency of edits for a particular dataobject class
 	 * Frequency for {@link SiteTree} objects can be determined from the version history.
+	 *
 	 * @param string
 	 * @return string
 	 */
@@ -63,7 +88,8 @@ class Sitemap {
 	}
 
 	/**
-	 * Returns the default priority of edits for a particular dataobject class.
+	 * Returns the default priority of edits for a particular dataobject class
+	 *
 	 * @param string
 	 * @return float
 	 */
@@ -76,6 +102,7 @@ class Sitemap {
 
 	/**
 	 * Automatically add SiteTree
+	 *
 	 * @param null
 	 * @return null
 	 */
@@ -89,6 +116,7 @@ class Sitemap {
 
 	/**
 	 * Return all sitemaps
+	 *
 	 * @param null
 	 * @return ArrayList
 	 */
@@ -114,13 +142,14 @@ class Sitemap {
 			}
 		}
 
-		return $sitemaps;
+		return $sitemaps->sort('LastEdited', 'DESC');
 	}
 
 	/**
 	 * Return all items in class
 	 * Supports additional filtering (filter, where & exclude)
 	 * Only returns items that contain Link()
+	 *
 	 * @param string
 	 * @return ArrayList
 	 */
@@ -146,7 +175,7 @@ class Sitemap {
 		if (isset($class['exclude'])) {
 			$list = $list->exclude($class['exclude']);
 		}
-		$list = $list->sort('LastEdited DESC');
+		$list = $list->sort('LastEdited', 'DESC');
 
 		/* only push items with a link */
 		foreach ($list as $item) {
