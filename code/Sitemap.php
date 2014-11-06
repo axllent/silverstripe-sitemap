@@ -153,12 +153,26 @@ class Sitemap {
 			$item->ChangeFrequency = self::get_frequency_for_class($className);
 			$item->GooglePriority = self::get_priority_for_class($className);
 			if ($item->hasMethod('SitemapAbsoluteURL')) {
+				$item->SitemapAbsoluteURL = $SitemapAbsoluteURL->SitemapAbsoluteURL();
 				$output->push($item);
 			}
 			else if ($item->hasMethod('Link')) {
 				$item->SitemapAbsoluteURL = Director::absoluteURL($item->Link());
 				$output->push($item);
 			}
+		}
+
+		/* Make sure we only include one of each link, and no external links (ie: redirector pages */
+		$output->removeDuplicates('SitemapAbsoluteURL');
+		$external_links = array();
+		$base_url = preg_quote(Director::absoluteBaseURL(), '/');
+		foreach ($output as $item) {
+			if (!preg_match('/^' . $base_url . '/', $item->SitemapAbsoluteURL)) {
+				array_push($external_links, $item->SitemapAbsoluteURL);
+			}
+		}
+		if (count($external_links) > 0) {
+			$output = $output->exclude('SitemapAbsoluteURL', $external_links);
 		}
 
 		return $output;
