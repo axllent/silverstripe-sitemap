@@ -19,6 +19,10 @@ class Sitemap_Controller extends Controller {
 		'sitemap'
 	);
 
+	public static $url_handlers = array(
+        'sitemap/$Class/$PageNum' => 'sitemap'
+    );
+
 	/**
 	 * Default controller action for the sitemap.xml file. Renders a index
 	 * file containing a list of links to sub sitemaps containing the data.
@@ -46,10 +50,13 @@ class Sitemap_Controller extends Controller {
 	 * Specific controller action for displaying a particular list of links
 	 * for a class
 	 */
-	public function sitemap() {
-		$class = $this->request->param('ID');
+	public function sitemap($request) {
+		$class = $this->request->param('Class');
+		$page_num = $this->request->param('PageNum');
 
-		$this->Items = Sitemap::get_items($class);
+		$page_num = (is_numeric($page_num) && $page_num > 0) ? $page_num : 1;
+
+		$this->Items = Sitemap::get_items($class, $page_num);
 
 		if (!$this->Items || $this->Items->Count() == 0) {
 			return new SS_HTTPResponse('Page not found', 404);

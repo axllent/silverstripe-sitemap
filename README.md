@@ -2,7 +2,8 @@
 This extension adds sitemap functionality to your SilverStripe website. It is heavily based on
 [googlesitemaps](https://github.com/silverstripe-labs/silverstripe-googlesitemaps), however does things a little
 differently, adding in support for basic custom filters when adding DataObjects, and removing some CMS integration,
-pagination of results, and JavaScript support.
+pagination of results, and JavaScript support. The sitemap is hard-coded to have a maximum of 1000 dataobjects per
+sitemap (due to memory use), and will automatically split your sitemaps into multiple if there are more.
 
 ## Requirements
 * SilverStripe 3.0+

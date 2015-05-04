@@ -129,32 +129,37 @@ class Sitemap {
 		if(count(self::$dataobjects) > 0) {
 
 			foreach(self::$dataobjects as $class => $config) {
-				$items = self::get_items($class)->Count();
-				if ($items > 0) {
-					$list = new DataList($class);
-					$latest = $list->max('LastEdited');
+				$items = self::get_filtered_results($class);
 
-					$sitemaps->push(new ArrayData(array(
-						'ClassName' => $class,
-						'LastEdited' => date('Y-m-d', strtotime($latest))
-					)));
+				if ($items->Count() > 0) {
+
+					$list = new PaginatedList($items);
+					$list->setPageLength(1000);
+
+					for ($x=0; $x < $list->TotalPages(); $x++) {
+						$latest = $list->max('LastEdited');
+						$sitemaps->push(new ArrayData(array(
+							'ClassName' => $class,
+							'LastEdited' => date('Y-m-d', strtotime($latest)),
+							'Page' => ($x > 0) ? $x+1 : false
+						)));
+					}
 				}
 			}
 		}
 
-		return $sitemaps->sort('LastEdited', 'DESC');
+		return $sitemaps;
+
 	}
 
 	/**
-	 * Return all items in class
+	 * Return all filtered items in class
 	 * Supports additional filtering (filter, where & exclude)
-	 * Only returns items that contain Link()
 	 *
 	 * @param string
 	 * @return ArrayList
 	 */
-	public static function get_items($className) {
-
+	public static function get_filtered_results($className) {
 		self::init_sitetree();
 
 		if (!self::is_registered($className)) {
@@ -162,8 +167,6 @@ class Sitemap {
 		}
 
 		$class = self::$dataobjects[$className];
-
-		$output = new ArrayList();
 
 		$list = new DataList($className);
 		if (isset($class['filter'])) {
@@ -176,6 +179,25 @@ class Sitemap {
 			$list = $list->exclude($class['exclude']);
 		}
 		$list = $list->sort('LastEdited', 'DESC');
+		return $list;
+	}
+
+	/**
+	 * Return paginated results in class
+	 * Only returns items that contain Link()
+	 * Limited to 1000 results per page
+	 *
+	 * @param string
+	 * @return ArrayList
+	 */
+	public static function get_items($className, $page=1) {
+
+		$items = self::get_filtered_results($className);
+		$list = new PaginatedList($items);
+		$list->setPageLength(1000);
+		$list->setCurrentPage($page);
+
+		$output = new ArrayList();
 
 		/* only push items with a link */
 		foreach ($list as $item) {
