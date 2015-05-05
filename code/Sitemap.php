@@ -135,13 +135,14 @@ class Sitemap {
 
 					$list = new PaginatedList($items);
 					$list->setPageLength(1000);
+					$pages = $list->TotalPages();
 
-					for ($x=0; $x < $list->TotalPages(); $x++) {
-						$latest = $list->max('LastEdited');
+					for ($x=1; $x <= $pages; $x++) {
+						$latest = $items->limit(1000, ($x-1) * 1000)->Sort('LastEdited', 'DESC')->first();
 						$sitemaps->push(new ArrayData(array(
 							'ClassName' => $class,
-							'LastEdited' => date('Y-m-d', strtotime($latest)),
-							'Page' => ($x > 0) ? $x+1 : false
+							'LastEdited' => date('Y-m-d', strtotime($latest->LastEdited)),
+							'Page' => ($x == 1) ? false : $x
 						)));
 					}
 				}
