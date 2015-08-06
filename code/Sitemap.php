@@ -109,7 +109,10 @@ class Sitemap {
 	public static function init_sitetree() {
 		if(self::$include_sitetree && class_exists('SiteTree') && !self::is_registered('SiteTree')) {
 			self::register_dataobject('SiteTree', array(
-				'filter' => array('ShowInSearch' => 1)
+				'filter' => array('ShowInSearch' => 1),
+				'filterByCallback' => function($page, $list) {
+					return $page->canView();
+				}
 			));
 		}
 	}
@@ -179,6 +182,9 @@ class Sitemap {
 		if (isset($class['exclude'])) {
 			$list = $list->exclude($class['exclude']);
 		}
+		if (isset($class['filterByCallback'])) {
+			$list = $list->filterByCallback($class['filterByCallback']);
+		}
 		$list = $list->sort('LastEdited', 'DESC');
 		return $list;
 	}
@@ -208,7 +214,7 @@ class Sitemap {
 				$item->SitemapAbsoluteURL = $SitemapAbsoluteURL->SitemapAbsoluteURL();
 				$output->push($item);
 			}
-			else if ($item->hasMethod('Link')) {
+			elseif ($item->hasMethod('Link')) {
 				$item->SitemapAbsoluteURL = Director::absoluteURL($item->Link());
 				$output->push($item);
 			}
@@ -257,7 +263,7 @@ class Sitemap {
 		));
 
 		$response = self::send_ping(
-			"www.google.com", "/webmasters/sitemaps/ping", sprintf("sitemap=%s", $location)
+			'www.google.com', '/webmasters/sitemaps/ping', sprintf('sitemap=%s', $location)
 		);
 
 		return $response;

@@ -35,6 +35,7 @@ Sitemap::register_dataobject('MyDataObject', array(
 	'filter' => array('ShowOnWeb' => 1),
 	'where' => '"ExpiryDate" >= \'' . date('Y-m-d') . '\' OR "ExpiryDate" IS NULL',
 	'exclude' => array('StockLevel' => 0),
+	'filterByCallback' => function($dataobject, $list) {return $dataobject->canView();}
 	'frequency' => 'weekly', // always, hourly, daily, weekly, monthly, yearly, never
 	'priority' => 0.5 // Valid values range from 0.0 to 1.0
 ));
