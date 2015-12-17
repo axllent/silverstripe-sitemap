@@ -12,60 +12,60 @@
  *
  * Originally based on github.com/silverstripe-labs/silverstripe-googlesitemaps
  */
-class Sitemap_Controller extends Controller {
+class Sitemap_Controller extends Controller
+{
 
-	private static $allowed_actions = array(
-		'index',
-		'sitemap'
-	);
+    private static $allowed_actions = array(
+        'index',
+        'sitemap'
+    );
 
-	public static $url_handlers = array(
+    public static $url_handlers = array(
         'sitemap/$Class/$PageNum' => 'sitemap'
     );
 
-	/**
-	 * Default controller action for the sitemap.xml file. Renders a index
-	 * file containing a list of links to sub sitemaps containing the data.
-	 */
-	public function index($url) {
+    /**
+     * Default controller action for the sitemap.xml file. Renders a index
+     * file containing a list of links to sub sitemaps containing the data.
+     */
+    public function index($url)
+    {
+        $this->Sitemaps = Sitemap::get_sitemaps();
 
-		$this->Sitemaps = Sitemap::get_sitemaps();
+        if ($this->Sitemaps->Count() == 0) {
+            return new SS_HTTPResponse('Page not found', 404);
+        }
 
-		if ($this->Sitemaps->Count() == 0) {
-			return new SS_HTTPResponse('Page not found', 404);
-		}
+        foreach ($this->Sitemaps as $s) {
+            $s->SitemapAbsoluteURL = Director::absoluteURL('sitemap.xml/sitemap/' . $s->ClassName . '/');
+        }
 
-		foreach ($this->Sitemaps as $s) {
-			$s->SitemapAbsoluteURL = Director::absoluteURL('sitemap.xml/sitemap/' . $s->ClassName . '/');
-		}
+        $this->getResponse()->addHeader('Content-Type', 'application/xml; charset="utf-8"');
+        $this->getResponse()->addHeader('X-Robots-Tag', 'noindex');
 
-		$this->getResponse()->addHeader('Content-Type', 'application/xml; charset="utf-8"');
-		$this->getResponse()->addHeader('X-Robots-Tag', 'noindex');
+        return $this->renderWith('Sitemap_sitemaps');
+    }
 
-		return $this->renderWith('Sitemap_sitemaps');
+    /**
+     * Specific controller action for displaying a particular list of links
+     * for a class
+     */
+    public function sitemap($request)
+    {
+        $class = $this->request->param('Class');
+        $page_num = $this->request->param('PageNum');
 
-	}
+        $page_num = (is_numeric($page_num) && $page_num > 0) ? $page_num : 1;
 
-	/**
-	 * Specific controller action for displaying a particular list of links
-	 * for a class
-	 */
-	public function sitemap($request) {
-		$class = $this->request->param('Class');
-		$page_num = $this->request->param('PageNum');
+        $this->Items = Sitemap::get_items($class, $page_num);
 
-		$page_num = (is_numeric($page_num) && $page_num > 0) ? $page_num : 1;
+        if (!$this->Items || $this->Items->Count() == 0) {
+            return new SS_HTTPResponse('Page not found', 404);
+        }
 
-		$this->Items = Sitemap::get_items($class, $page_num);
+        $this->getResponse()->addHeader('Content-Type', 'application/xml; charset="utf-8"');
+        $this->getResponse()->addHeader('X-Robots-Tag', 'noindex');
 
-		if (!$this->Items || $this->Items->Count() == 0) {
-			return new SS_HTTPResponse('Page not found', 404);
-		}
-
-		$this->getResponse()->addHeader('Content-Type', 'application/xml; charset="utf-8"');
-		$this->getResponse()->addHeader('X-Robots-Tag', 'noindex');
-
-		return $this->renderWith('Sitemap');
-	}
-
+        return $this->renderWith('Sitemap');
+    }
 }
