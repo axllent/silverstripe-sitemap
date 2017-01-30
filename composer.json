@@ -1,6 +1,6 @@
 {
 	"name": "axllent/silverstripe-sitemap",
-	"description": "Sitemap support SilverStripe 3",
+	"description": "Sitemap support SilverStripe",
 	"type": "silverstripe-module",
 	"homepage": "https://github.com/axllent/silverstripe-sitemap",
 	"keywords": ["silverstripe", "sitemap", "google", "seo"],
@@ -15,6 +15,6 @@
 		"issues": "https://github.com/axllent/silverstripe-sitemap/issues"
 	},
 	"require": {
-		"silverstripe/framework": ">=0.3"
+		"silverstripe/framework": "^3.0"
 	}
 }

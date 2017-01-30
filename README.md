@@ -8,6 +8,11 @@ sitemap (due to memory use), and will automatically split your sitemaps into mul
 ## Requirements
 * SilverStripe 3.0+
 
+## Installation
+```
+composer require axllent/silverstripe-sitemap
+```
+
 ## Basic usage
 Simply install the module. To check the sitemap is working, go to
 `http://yoursite.com/sitemap.xml?flush=1`. By default it will add your SiteTree pages (with "show in search" enabled),
