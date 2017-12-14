@@ -207,6 +207,9 @@ class Sitemap
     public static function get_items($className, $page=1)
     {
         $items = self::get_filtered_results($className);
+        if (!$items) {
+            return new ArrayList(); // 404
+        }
         $list = new PaginatedList($items);
         $list->setPageLength(1000);
         $list->setCurrentPage($page);
